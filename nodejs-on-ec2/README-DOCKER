@@ -1,3 +1,0 @@
-docker build -t nodejs-app-image .
-
-sudo docker run -p 80:80 nodejs-app-image
