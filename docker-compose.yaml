@@ -1,3 +1,5 @@
+#sudo docker compose up --build --> run docker compose 
+#sudo docker compose down  --> delet the infra 
 version: '3.8' # Specify the Docker Compose file format version
 
 services:
