@@ -53,7 +53,7 @@ jobs:
           sudo docker compose up --build -d
         # Ensure your self-hosted runner user is part of the 'docker' group
         # or has sudo privileges to run docker-compose commands.
-        # e.g., sudo docker-compose up 
+        # e.g., sudo docker-compose up -d
 
       - name: Deployment completed successfully
         run: echo "CI/CD pipeline finished. Services should be running."
