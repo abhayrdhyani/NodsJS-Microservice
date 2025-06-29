@@ -50,7 +50,7 @@ jobs:
       - name: Run Docker Compose
         run: |
           cd /opt/DEV/NodsJS-Microservice
-          sudo docker compose up --build -d
+          sudo docker compose up -d
         # Ensure your self-hosted runner user is part of the 'docker' group
         # or has sudo privileges to run docker-compose commands.
         # e.g., sudo docker-compose up -d
