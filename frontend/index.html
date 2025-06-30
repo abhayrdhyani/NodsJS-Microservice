@@ -16,13 +16,14 @@
   <body>
     <div
       id="audio-player"
-      class="fixed bottom-4 left-4 bg-white shadow-xl rounded-lg flex items-center p-4 gap-4 z-50 opacity-0 pointer-events-none transition-opacity duration-500"
-    >
+      class="fixed bottom-4 left-4 bg-white shadow-xl rounded-lg flex items-center p-4 gap-4 z-50 transition-opacity duration-500"
+      >
       <button
         id="play-btn"
         class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
       >
-        Play </button>
+        Play
+      </button>
       <input
         id="volume-slider"
         type="range"
@@ -47,7 +48,6 @@
     </div>
 
     <script>
-      // All DOM-related JavaScript is now within this single DOMContentLoaded listener
       document.addEventListener('DOMContentLoaded', () => {
         // --- Audio Player Script ---
         const audio = new Audio('tropical_1.mp3');
@@ -56,38 +56,19 @@
 
         const playBtn = document.getElementById('play-btn');
         const volumeSlider = document.getElementById('volume-slider');
-        const playerUI = document.getElementById('audio-player');
+        // const playerUI = document.getElementById('audio-player'); // playerUI is now always visible
 
         let isPlaying = false; // Music is not playing initially
-
-        // The 'startAudio' function is no longer needed for initial playback,
-        // as we're removing the body click listener.
-        // It can be removed or left as is if you plan to reuse it.
-        // For clarity, I'm keeping the logic inline in the playBtn listener.
-
-        // REMOVED: The document.body.addEventListener block that tried to autoplay on first click.
-        // This ensures the music will ONLY play when the 'Play' button is pressed.
-        /*
-        document.body.addEventListener(
-          'click',
-          () => {
-            if (!isPlaying) {
-              startAudio();
-            }
-          },
-          { once: true },
-        );
-        */
 
         playBtn.addEventListener('click', () => {
           if (isPlaying) {
             audio.pause();
             playBtn.textContent = 'Play';
           } else {
-            audio.play();
+            // Only attempt to play if the audio has loaded
+            audio.play().catch(e => console.error("Error playing audio:", e));
             playBtn.textContent = 'Pause';
-            // Make the audio player UI visible once user interacts to play
-            playerUI.classList.remove('opacity-0', 'pointer-events-none');
+            // No need to remove opacity/pointer-events, as the player is now visible by default.
           }
           isPlaying = !isPlaying;
         });
@@ -102,7 +83,6 @@
 
         fetchBackendButton.addEventListener('click', () => {
           // IMPORTANT: Ensure this IP and port are correct for your EC2 backend deployment.
-          // Based on our discussion, it's likely your EC2 Public IP on port 8080.
           fetch('http://15.206.149.210:8080/api/hello')
             .then((response) => {
               if (!response.ok) {
@@ -112,7 +92,7 @@
             })
             .then((data) => {
               console.log('Data from backend:', data);
-              backendMessageParagraph.textContent = data.message; // Update the paragraph with the message
+              backendMessageParagraph.textContent = data.message;
             })
             .catch((error) => {
               console.error('Error fetching data from backend:', error);
