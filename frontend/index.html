@@ -106,7 +106,7 @@
         fetchBackendButton.addEventListener('click', () => {
           // IMPORTANT: 'backend-service' is the name of our backend service in docker-compose.yaml
           // This is how containers communicate within the Docker network.
-          fetch('http://15.206.149.210:8080/api/hello')
+          fetch(http://15.206.149.210:8080/api/hello)
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
