@@ -1,0 +1,62 @@
+#sudo docker compose up --build --> run docker compose 
+#sudo docker compose down  --> delet the infra 
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  # Backend Service
+  backend-service:
+    build: ./backend # Instruct Docker Compose to build the image from the 'backend' directory
+    ports:
+      - "8080:80" # Map host port 8080 to container port 80 (where Node.js listens)
+    environment:
+      NODE_ENV: development # Example environment variable for Node.js
+    volumes:
+      - ./backend:/app # Mount the local backend folder to /app in the container
+      - /app/node_modules # Exclude node_modules from being overwritten by host mount
+    networks:
+      - app-network # Connect to our custom network
+
+  # Frontend Service
+  frontend-service:
+    build: ./frontend # Instruct Docker Compose to build the image from the 'frontend' directory
+    ports:
+      - "80:80" # Map host port 80 to container port 80 (where Nginx listens)
+    depends_on:
+      - backend-service # Ensure backend starts before frontend (optional, but good practice)
+    volumes:
+      - ./frontend:/usr/share/nginx/html # Mount the local frontend folder to Nginx's serving path
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro # Mount the Nginx config file read-only
+    networks:
+      - app-network # Connect to our custom network
+
+# Define networks
+networks:
+  app-network:
+    driver: bridge # Default bridge network for inter-container communication
+
+
+
+
+
+#Explanation of the docker-compose.yaml:
+
+#version: '3.8': Specifies the Docker Compose file format version. Using a recent stable version is generally good.
+#services:: This section defines the different components of your application.
+#backend-service::
+#build: ./backend: Tells Docker Compose to look for a Dockerfile in the ./backend directory and build an image from it.
+#ports: - "8080:80": This is crucial for external access. It maps port 8080 on your host machine (your computer) to port 80 inside the backend-service container. So, you can access your backend from your browser (or Postman) at http://localhost:8080.
+#environment: NODE_ENV: development: An example of setting an environment variable for your Node.js application.
+#volumes:: This sets up bind mounts.
+#- ./backend:/app: This mounts your local nodejs-on-ec2/backend directory directly into the /app directory inside the container. This is extremely useful for development because any changes you make to index.js (or other backend files) on your host machine will be immediately reflected in the running container without needing to rebuild the image.
+#- /app/node_modules: This is a "named volume" trick to prevent the node_modules directory inside the container (which was created by npm install) from being overwritten by the host mount. Without this, your node_modules would get deleted/ignored because they aren't directly in your host's backend folder.
+#networks: - app-network: Connects this service to a custom network we're defining.
+#frontend-service::
+#build: ./frontend: Tells Docker Compose to look for a Dockerfile in the ./frontend directory and build an image from it.
+#ports: - "80:80": This maps port 80 on your host machine to port 80 inside the frontend-service container. This means you can access your frontend directly at http://localhost. If port 80 is already in use on your machine, you can change the host port (e.g., "3000:80" to access it at http://localhost:3000).
+#depends_on: - backend-service: This tells Docker Compose that frontend-service depends on backend-service. Docker Compose will try to start backend-service before frontend-service. Note: depends_on only ensures the container starts, not that the application inside it is fully ready.
+#volumes::
+#- ./frontend:/usr/share/nginx/html: Mounts your local nodejs-on-ec2/frontend directory into Nginx's serving directory. Again, great for development as index.html changes will be instant.
+#- ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro: Mounts your custom nginx.conf file directly into the container, replacing the default Nginx configuration. :ro means "read-only."
+#networks: - app-network: Connects this service to our custom network.
+#networks:: This section defines custom networks.
+#app-network: driver: bridge: Creates a bridge network. Containers connected to the same bridge network can communicate with each other using their service names (e.g., frontend-service can reach backend-service at http://backend-service:80).

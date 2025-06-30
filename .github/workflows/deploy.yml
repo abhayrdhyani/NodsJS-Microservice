@@ -1,0 +1,59 @@
+# .github/workflows/deploy.yml
+name: CI/CD Deployment to DEV Environment
+
+on:
+  push:
+    branches:
+      - DEV # This workflow will run whenever there's a push to the 'DEV' branch
+
+jobs:
+  deploy:
+    # Use your self-hosted runner.
+    # Replace 'self-hosted' with the label you assigned to your runner if it's different.
+    runs-on: self-hosted
+
+    steps:
+      - name: Display current working directory (for context)
+        run: pwd
+
+      - name: Check for existing deployment directory and clean up
+        run: |
+          if [ -d "/opt/DEV/NodsJS-Microservice" ]; then
+            echo "Existing directory found. Deleting..."
+            rm -rf /opt/DEV/NodsJS-Microservice
+            echo "Previous deployment cleaned."
+          else
+            echo "No existing directory /opt/DEV/NodsJS-Microservice found. Proceeding with fresh clone."
+          fi
+        # You might want to add a 'sudo' if the runner user doesn't have direct permissions
+        # For example: sudo rm -rf /opt/DEV/NodsJS-Microservice
+
+      - name: Ensure /opt/DEV directory exists
+        run: |
+          mkdir -p /opt/DEV
+        # Consider 'sudo mkdir -p /opt/DEV' if permissions are an issue
+
+      - name: Clone the repository into /opt/DEV/NodsJS-Microservice
+        # Instead of 'actions/checkout', we'll manually clone to specify the path
+        run: |
+          git clone -b DEV https://github.com/abhayrdhyani/NodsJS-Microservice.git /opt/DEV/NodsJS-Microservice
+       # env:
+          # Use the GITHUB_TOKEN provided by GitHub Actions for authentication
+          # This token has permissions to clone the repository
+         # GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Change into the project directory
+        run: |
+          cd /opt/DEV/NodsJS-Microservice
+          pwd # Verify we are in the correct directory
+
+      - name: Run Docker Compose
+        run: |
+          cd /opt/DEV/NodsJS-Microservice
+          sudo docker compose up -d
+        # Ensure your self-hosted runner user is part of the 'docker' group
+        # or has sudo privileges to run docker-compose commands.
+        # e.g., sudo docker-compose up -d
+
+      - name: Deployment completed successfully
+        run: echo "CI/CD pipeline finished. Services should be running."

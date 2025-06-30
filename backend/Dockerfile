@@ -24,11 +24,11 @@ COPY . .
 # Expose the port your Node.js application listens on.
 # Assuming your express app listens on port 3000 (a common default).
 # If your index.js explicitly listens on a different port, change this.
-EXPOSE 3000
+EXPOSE 80
 
 # Define the command to run your Node.js application when the container starts.
 # We use "npm start" as defined in your package.json scripts.
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
 
 # Note: The userscript.sh is for setting up your EC2 VM, not for the Docker container.
 # It is not needed inside this Dockerfile.
