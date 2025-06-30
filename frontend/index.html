@@ -22,8 +22,7 @@
         id="play-btn"
         class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
       >
-        Pause
-      </button>
+        Play </button>
       <input
         id="volume-slider"
         type="range"
@@ -59,21 +58,16 @@
         const volumeSlider = document.getElementById('volume-slider');
         const playerUI = document.getElementById('audio-player');
 
-        let isPlaying = false;
+        let isPlaying = false; // Music is not playing initially
 
-        const startAudio = () => {
-          audio
-            .play()
-            .then(() => {
-              isPlaying = true;
-              // Show player controls
-              playerUI.classList.remove('opacity-0', 'pointer-events-none');
-            })
-            .catch((err) => {
-              console.log('Autoplay failed:', err);
-            });
-        };
+        // The 'startAudio' function is no longer needed for initial playback,
+        // as we're removing the body click listener.
+        // It can be removed or left as is if you plan to reuse it.
+        // For clarity, I'm keeping the logic inline in the playBtn listener.
 
+        // REMOVED: The document.body.addEventListener block that tried to autoplay on first click.
+        // This ensures the music will ONLY play when the 'Play' button is pressed.
+        /*
         document.body.addEventListener(
           'click',
           () => {
@@ -83,6 +77,7 @@
           },
           { once: true },
         );
+        */
 
         playBtn.addEventListener('click', () => {
           if (isPlaying) {
@@ -91,6 +86,8 @@
           } else {
             audio.play();
             playBtn.textContent = 'Pause';
+            // Make the audio player UI visible once user interacts to play
+            playerUI.classList.remove('opacity-0', 'pointer-events-none');
           }
           isPlaying = !isPlaying;
         });
@@ -104,8 +101,8 @@
         const backendMessageParagraph = document.getElementById('backend-message');
 
         fetchBackendButton.addEventListener('click', () => {
-          // IMPORTANT: 'backend-service' is the name of our backend service in docker-compose.yaml
-          // This is how containers communicate within the Docker network.
+          // IMPORTANT: Ensure this IP and port are correct for your EC2 backend deployment.
+          // Based on our discussion, it's likely your EC2 Public IP on port 8080.
           fetch('http://15.206.149.210:8080/api/hello')
             .then((response) => {
               if (!response.ok) {
