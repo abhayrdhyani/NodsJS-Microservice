@@ -8,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
     />
 
-    <title>Stitch Design</title>
+    <title>The Mountain Cafe</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -106,7 +106,7 @@
         fetchBackendButton.addEventListener('click', () => {
           // IMPORTANT: 'backend-service' is the name of our backend service in docker-compose.yaml
           // This is how containers communicate within the Docker network.
-          fetch('http://backend-service:80/api/hello')
+          fetch('http://15.206.149.210:80/api/hello')
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
