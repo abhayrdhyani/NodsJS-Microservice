@@ -36,7 +36,7 @@ jobs:
       - name: Clone the repository into /opt/DEV/NodsJS-Microservice
         # Instead of 'actions/checkout', we'll manually clone to specify the path
         run: |
-          git clone -b DEV https://github.com/abhayrdhyani/NodsJS-Microservice.git /opt/DEV/NodsJS-Microservice
+          git clone -b main https://github.com/abhayrdhyani/NodsJS-Microservice.git /opt/DEV/NodsJS-Microservice
        # env:
           # Use the GITHUB_TOKEN provided by GitHub Actions for authentication
           # This token has permissions to clone the repository
